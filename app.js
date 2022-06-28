@@ -1,11 +1,11 @@
 "use strict";
-const form =      document.getElementById("form");
+const form = document.getElementById("form");
 const textInput = document.getElementById("textInput");
 const dateInput = document.getElementById("dateInput");
-const textArea =  document.getElementById("textarea");
-const message  =  document.getElementById("msg");
-const tasks   =   document.getElementById("tasks");
-const addTask =   document.getElementById("add");
+const textArea = document.getElementById("textarea");
+const message = document.getElementById("msg");
+const tasks = document.getElementById("tasks");
+const addTask = document.getElementById("add");
 const resetData = document.getElementById("resetData");
 
 let characterCounter = document.getElementById("char_count");
@@ -18,11 +18,11 @@ const countCharacters = () => {
 
   if (counter < 10) {
     characterCounter.style.color = "red";
-} else if (counter < 20 && counter >= 10) {
+  } else if (counter < 20 && counter >= 10) {
     characterCounter.style.color = "orange";
-} else {
+  } else {
     characterCounter.style.color = "black";
-}
+  }
 };
 
 textArea.addEventListener("input", countCharacters);
@@ -32,47 +32,50 @@ let taskList = JSON.parse(localStorage.getItem("taskList")) || [];
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   formValidation();
+ 
 });
 
-dateInput.addEventListener("click", function(){
-    let today = new Date();
-    let dd = today.getDate();
-    let mm = today.getMonth() + 1;
-    let yyyy = today.getFullYear();
-    if(dd < 10){
-        dd = '0' + dd;
-    }
-    if(mm < 10){
-        mm = '0' + mm;
-    }
-    today = yyyy+'-'+mm+'-'+dd;
-    dateInput.setAttribute("min", today)
-
-})
+dateInput.addEventListener("click", function () {
+  let today = new Date();
+  let dd = today.getDate();
+  let mm = today.getMonth() + 1;
+  let yyyy = today.getFullYear();
+  if (dd < 10) {
+    dd = "0" + dd;
+  }
+  if (mm < 10) {
+    mm = "0" + mm;
+  }
+  today = yyyy + "-" + mm + "-" + dd;
+  dateInput.setAttribute("min", today);
+});
 //Form validation
 let formValidation = (e) => {
-     
-  if (textInput.value === "" || dateInput.value === "" || textArea.value === "") {
-    
+  if (
+    textInput.value === "" ||
+    dateInput.value === "" ||
+    textArea.value === ""
+  ) {
     message.innerHTML = "Input Field Required";
     e.preventDefault();
   } else {
     message.innerHTML = "";
- 
+
     addFormData();
     add.setAttribute("data-bs-dismiss", "modal");
     add.click();
-  } 
+  }
   (() => {
     add.setAttribute("data-bs-dismiss", "");
   })();
   clearForm();
 };
 
-
 //Add new data to local Storage
 
 let addFormData = () => {
+  
+
   taskList.push({
     title: textInput.value,
     date: dateInput.value,
@@ -81,25 +84,28 @@ let addFormData = () => {
   });
   localStorage.setItem("taskList", JSON.stringify(taskList));
   createNewTask();
-};
-function lessThanFunction(x) {
-  
-   taskList[x].more = !taskList[x].more;  
-   createNewTask()
-}
-// function showLessFunction() {
-//   createNewTask();
-// }
 
+};
+
+function lessThanFunction(x) {
+  taskList[x].more = !taskList[x].more;
+  createNewTask();
+}
 
 //Create a new task
 function createNewTask() {
+  clearForm();
   tasks.innerHTML = "";
+  //condition to hide clear button on condition
+  taskList.length > 0
+    ? (document.querySelector(".clearBtn").style.display = "auto")
+    : (document.querySelector(".clearBtn").style.display = "none");
+
   taskList.length > 0 &&
-    taskList.map((x, y) => {  //x is task(object) and y is index(number) of that task
-   
+    taskList.map((x, y) => {
+      //x is task(object) and y is index(number) of that task
+
       if (x.more) {
-        
         var description =
           x.description.length > 40
             ? `${x.description.slice(
@@ -107,8 +113,8 @@ function createNewTask() {
                 40
               )}<button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>more</button>`
             : x.description;
-            }
-     
+      }
+
       if (!x.more) {
         var description =
           x.description.length > 40
@@ -124,8 +130,8 @@ function createNewTask() {
     <span class="show-more"></span>
     </p>
     <span class="options">
-      <i onClick= "editTask(this)"  id=${y} data-bs-toggle="modal" data-bs-target="#form" class="fas fa-edit"></i>
-      <i onClick ="deleteTask(${y}); createNewTask()" id=${y} class="fas fa-trash-alt"></i>
+      <i onclick = "editTask(this)"  id=${y} data-bs-toggle="modal" data-bs-target="#form" class="fas fa-edit"></i>
+      <i onclick ="deleteTask(${y}); createNewTask()" id=${y} class="fas fa-trash-alt"></i>
     </span>
     </div>
 `);
@@ -133,7 +139,6 @@ function createNewTask() {
   clearForm();
 }
 createNewTask();
-
 
 //Delete a task
 
@@ -156,49 +161,59 @@ let deleteTask = (y) => {
   });
 };
 
-
 //Edit Fnctionality
 function editTask(e) {
+  if (!taskList.length) {
+    taskList = JSON.parse(localStorage.getItem("taskList"));
+  }
   textInput.value = taskList[e.id].title;
   dateInput.value = taskList[e.id].date;
   textArea.value = taskList[e.id].description;
-  taskList.splice(taskList[e.id], 1);
-  addTask.addEventListener("onClick", function (e) {
+  //console.log(e.id);
+  //console.log(taskList);
+  taskList.splice(taskList[e.id],1)
+  document.getElementById("add").classList.add("hidden");
+  document.getElementById("edit").classList.remove("hidden");
+
+  
+
+  document.getElementById("edit").addEventListener("click", function (el) {
+   // taskList[e.id].title = textInput.value;
     taskList[e.id].date = dateInput.value;
     taskList[e.id].description = textArea.value;
+    //console.log(e.id);
+    // taskList.splice(taskList[taskList.length-1],1)
 
-    localStorage.setItem("taskList", JSON.stringify(taskList));
+    //console.log(taskList, taskList[e.id]);
+
+     localStorage.setItem("taskList", JSON.stringify(taskList));
+
+    document.getElementById("edit").classList.add("hidden");
+    document.getElementById("add").classList.remove("hidden");
     
+ 
   });
-  
-//clear Form
 
+  //clear Form
 }
+
 function clearForm() {
   textInput.value = "";
   dateInput.value = "";
   textArea.value = "";
 }
 
-resetData.addEventListener("click", function(){
+resetData.addEventListener("click", function () {
   localStorage.clear();
-  taskList = localStorage
+  taskList = localStorage;
   createNewTask();
-})
+});
 
-function clearBtnHide(){
-  if(taskList != []){
-    resetData.style.display = "block";
-  }
-  else{
-    resetData.style.display = "none";
-  }
-}
+document.querySelector("#addNew").addEventListener("click", () => {
+  clearForm();
+  document.getElementById("edit").classList.add("hidden");
+
+  document.getElementById("add").classList.remove("hidden");
+});
 
 
-
-//Task: use scroll on cards instead of entire container
-//Task: Form should not reset on invalid input submission.
-//Task: Add a clear button on right top which should show up only if taskList is not empty
-//Task: 1000 character limit in description show a counter that counts words 
-//Task: put more button after a word.

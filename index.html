@@ -19,8 +19,8 @@
 <body>
     <div class="app">
         <h4 class="mb-3">To Do App</h4>
-        <div class="clearBtn">
-          <button class="clearAll" id="resetData"> clear </button>
+        <div class="clearAll">
+          <button class="clearBtn" id="resetData"> clear </button>
         </div>
         <div id="addNew" data-bs-toggle="modal" data-bs-target="#form">
             <span>Add New Task</span>
@@ -61,6 +61,7 @@ aria-hidden="true"
         id="textarea"
         cols="30"
         rows="5"
+        maxlength="1000"
       ></textarea>
       <span id="char_count">1000/1000</span>
       <div id="msg"></div>
@@ -69,6 +70,9 @@ aria-hidden="true"
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
         Close
       </button>
+
+      <button  id="edit" class="btn btn-primary hidden" >Edit</button>
+
       <button type="submit" id="add" class="btn btn-primary">Add</button>
     </div>
   </div>

@@ -11,7 +11,9 @@ body {
   background-color: #fff;
   width: 300px;
   margin: 50px 0px;
-  min-height: 500px;
+  /* min-height: 500px;
+  max-height: 700px; */
+height: 500px;
   border: 5px solid #ac8bc7;
   border-radius: 8px;
   padding: 15px;
@@ -35,9 +37,15 @@ body {
 }
 .task-container{
   width: 100%; 
+  height: 100%;
+ 
 }
 .task-container p {
   width: 100%;
+  height: 100%;
+  /* overflow-y: auto; */
+  overflow-x: auto;
+  text-align:justify;
 }
 
 .form-control-head::after{
@@ -49,11 +57,14 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 14px;
+  overflow-y: auto;
+  overflow-x: auto;
 }
 
 #tasks div {
   display: flex;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
+  height: 200px;
   border: 3px solid #a17bd3;
   background-color: #e2eede;
   border-radius: 8px;
@@ -88,7 +99,7 @@ body {
  border-color: #dedddf;
 }
 
-.clearAll{
+.clearBtn{
   border-radius: 15px;
   border-color: #e2eede;
   background-color: #a463d0;
@@ -96,7 +107,16 @@ body {
   margin-left: auto;
   margin-right: 0;
 }
-.clearBtn{
+.clearAll{
   position: relative;
   bottom: 10px;
+}
+
+#tasks{
+  height: 300px;
+  overflow-y:scroll ;
+  overflow-x:auto ;
+}
+.hidden{
+  display: none;
 }
