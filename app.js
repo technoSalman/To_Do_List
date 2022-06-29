@@ -3,7 +3,10 @@ const form = document.getElementById("form");
 const textInput = document.getElementById("textInput");
 const dateInput = document.getElementById("dateInput");
 const textArea = document.getElementById("textarea");
-const message = document.querySelector(".msg");
+const message1 = document.getElementById("msg1");
+const message2 = document.getElementById("msg2");
+const message3 = document.getElementById("msg3");
+
 const tasks = document.getElementById("tasks");
 const addTask = document.getElementById("add");
 const resetData = document.getElementById("resetData");
@@ -54,18 +57,31 @@ dateInput.addEventListener("click", function () {
 
 //Form validation
 let formValidation = (e) => {
-  if (
-    textInput.value === "" ||
-    dateInput.value === "" ||
-    textArea.value === ""
-  ) {
-    message.innerHTML = "Input Field Required";
-    e.preventDefault();
-  } else {
-   
+  if( textInput.value === ""||dateInput.value === ""||textArea.value === ""){
+  //  if( textInput.value === "" ) message1.innerHTML = "Input Field Required";
+  //   else if(dateInput.value === "" ) message2.innerHTML = "Input Field Required";
+  //   else if(textArea.value === "" ) message3.innerHTML = "Input Field Required";
+    
+  function validInput(...inputs){
+    let message=[message1,message2,message3]
+    inputs.map((e,i)=>{
+      if(!e){
+        
+        message[i].innerHTML = "Input Field Required";}
+        else{
+        message[i].innerHTML = "";
 
-    message.innerHTML = "";
+        }
+      })
+  }
+  validInput(textInput.value,dateInput.value,textArea.value)
+  e.preventDefault();
+  }
 
+   else {
+    message1.innerHTML = "";
+    message2.innerHTML = "";
+     message3.innerHTML = "";
     addFormData();
     add.setAttribute("data-bs-dismiss", "modal");
     add.click();
@@ -127,14 +143,14 @@ function createNewTask() {
             ? `${x.description.slice(
                 0,
                 40
-              )}<button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>more</button>`
+              )}<span>...</span><button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>more</button>`
             : x.description;
       }
 
       if (!x.more) {
         var description =
           x.description.length > 40
-            ? ` ${x.description}<button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>less</button>`
+            ? ` ${x.description}<span>...</span><button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>less</button>`
             : x.description.slice(0, 40);
       }
 
