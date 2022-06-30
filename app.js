@@ -17,6 +17,7 @@ const maxNumOfChars = 1000;
 
 const modal = document.getElementById("addNew");
 modal.addEventListener("click", function(){
+  edit = false;
   message1.classList.add("hidden");
   message2.classList.add("hidden");
   message3.classList.add("hidden");
@@ -247,11 +248,13 @@ function editTask(e) {
   edit = true;
 }
 
+
 function clearForm() {
   textInput.value = "";
   dateInput.value = "";
   textArea.value = "";
 }
+
 
 resetData.addEventListener("click", function () {
   localStorage.clear();
@@ -260,6 +263,7 @@ resetData.addEventListener("click", function () {
   createNewTask();
   resetData.classList.add("hidden");
 });
+
 
 document.querySelector("#addNew").addEventListener("click", () => {
   resetCounter();
