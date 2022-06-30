@@ -15,9 +15,12 @@ let index = -1;
 let characterCounter = document.getElementById("char_count");
 const maxNumOfChars = 1000;
 
+
+
 const modal = document.getElementById("addNew");
 modal.addEventListener("click", function(){
-  edit = false;
+  edit = false;//this is needed to stop addnewtask functionality from behaving as edit functionality
+  countCharacters();
   message1.classList.add("hidden");
   message2.classList.add("hidden");
   message3.classList.add("hidden");
@@ -28,6 +31,7 @@ const countCharacters = () => {
   let counter = maxNumOfChars - numOfEnteredChars;
   characterCounter.textContent = counter + "/1000";
 
+  
   if (counter < 10) {
     characterCounter.style.color = "red";
   } else if (counter < 20 && counter >= 10) {
@@ -35,13 +39,20 @@ const countCharacters = () => {
   } else {
     characterCounter.style.color = "black";
   }
+
+  return maxNumOfChars;
 };
 
 
 
+
 function resetCounter() {
-  characterCounter.textContent = "1000/1000";
+
+  characterCounter.textContent = maxNumOfChars + "/"+ maxNumOfChars; 
+  
 }
+
+
 
 textArea.addEventListener("input", countCharacters);
 
@@ -174,17 +185,19 @@ function createNewTask() {
       if (x.more) {
         var description =
           x.description.length > 40
-            ? `${x.description.slice(
+            ?`${x.description
+             .slice(
                 0,
                 40
-              )}<span>...</span><button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>more</button>`
+              )
+            }<span>...</span><button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>more</button>`
             : x.description;
       }
 
       if (!x.more) {
         var description =
           x.description.length > 40
-            ? ` ${x.description}<span>...</span><button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>less</button>`
+            ? ` ${x.description}<span></span><button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>less</button>`
             : x.description.slice(0, 40);
       }
       const dateFormated = `${new Date(x.date)
