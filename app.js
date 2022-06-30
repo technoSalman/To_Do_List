@@ -1,4 +1,5 @@
 "use strict";
+
 const form = document.getElementById("form");
 const textInput = document.getElementById("textInput");
 const dateInput = document.getElementById("dateInput");
@@ -6,14 +7,20 @@ const textArea = document.getElementById("textarea");
 const message1 = document.getElementById("msg1");
 const message2 = document.getElementById("msg2");
 const message3 = document.getElementById("msg3");
-
 const tasks = document.getElementById("tasks");
 const addTask = document.getElementById("add");
 const resetData = document.getElementById("resetData");
 let edit = false;
-let index = -1
+let index = -1;
 let characterCounter = document.getElementById("char_count");
 const maxNumOfChars = 1000;
+
+const modal = document.getElementById("addNew");
+modal.addEventListener("click", function(){
+  message1.classList.add("hidden");
+  message2.classList.add("hidden");
+  message3.classList.add("hidden");
+})
 
 const countCharacters = () => {
   let numOfEnteredChars = textArea.value.length;
@@ -29,14 +36,33 @@ const countCharacters = () => {
   }
 };
 
+
+
+
+
+function resetCounter() {
+  characterCounter.textContent = "1000/1000";
+}
+
 textArea.addEventListener("input", countCharacters);
+
+textInput.addEventListener("input", function () {
+  message1.classList.add("hidden");
+});
+
+dateInput.addEventListener("input", function () {
+  message2.classList.add("hidden");
+});
+
+textArea.addEventListener("input", function () {
+  message3.classList.add("hidden");
+});
 
 let taskList = JSON.parse(localStorage.getItem("taskList")) || [];
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
-  formValidation();
- 
+  formValidation(e);
 });
 
 dateInput.addEventListener("click", function () {
@@ -44,6 +70,7 @@ dateInput.addEventListener("click", function () {
   let dd = today.getDate();
   let mm = today.getMonth() + 1;
   let yyyy = today.getFullYear();
+
   if (dd < 10) {
     dd = "0" + dd;
   }
@@ -54,34 +81,37 @@ dateInput.addEventListener("click", function () {
   dateInput.setAttribute("min", today);
 });
 
-
 //Form validation
 let formValidation = (e) => {
-  if( textInput.value === ""||dateInput.value === ""||textArea.value === ""){
-  //  if( textInput.value === "" ) message1.innerHTML = "Input Field Required";
-  //   else if(dateInput.value === "" ) message2.innerHTML = "Input Field Required";
-  //   else if(textArea.value === "" ) message3.innerHTML = "Input Field Required";
-    
-  function validInput(...inputs){
-    let message=[message1,message2,message3]
-    inputs.map((e,i)=>{
-      if(!e){
-        
-        message[i].innerHTML = "Input Field Required";}
-        else{
-        message[i].innerHTML = "";
+
+  if (
+    textInput.value === "" ||
+    dateInput.value === "" ||
+    textArea.value === ""
+  ) {
+   
+    function validInput(...inputs) {
+      let message = [message1, message2, message3];
+      inputs.map((e, i) => {
+        if (!e) {
+
+          message1.classList.remove("hidden");
+          message2.classList.remove("hidden");
+          message3.classList.remove("hidden");
+          return (message[i].innerHTML = "Input Field Required");
+
+        } else {
+
+          return (message[i].innerHTML = "");
 
         }
-      })
-  }
-  validInput(textInput.value,dateInput.value,textArea.value)
-  e.preventDefault();
-  }
+      });
+    }
 
-   else {
-    message1.innerHTML = "";
-    message2.innerHTML = "";
-     message3.innerHTML = "";
+    validInput(textInput.value, dateInput.value, textArea.value);
+    e.preventDefault();
+  } else {
+
     addFormData();
     add.setAttribute("data-bs-dismiss", "modal");
     add.click();
@@ -90,32 +120,28 @@ let formValidation = (e) => {
     add.setAttribute("data-bs-dismiss", "");
   })();
   clearForm();
+  resetCounter();
 };
-
 
 //Add new data to local Storage
 
 let addFormData = () => {
-  
-  if(edit){
+  if (edit) {
     taskList[index].title = textInput.value;
     taskList[index].date = dateInput.value;
     taskList[index].description = textArea.value;
     edit = false;
-    index = -1
+    index = -1;
+  } else {
+    taskList.push({
+      title: textInput.value,
+      date: dateInput.value,
+      description: textArea.value,
+      more: true,
+    });
   }
-  else
-  {
-    
-  taskList.push({
-    title: textInput.value,
-    date: dateInput.value,
-    description: textArea.value,
-    more: true,
-  });}
   localStorage.setItem("taskList", JSON.stringify(taskList));
   createNewTask();
-
 };
 
 function lessThanFunction(x) {
@@ -123,14 +149,17 @@ function lessThanFunction(x) {
   createNewTask();
 }
 
-
 //Create a new task
 function createNewTask() {
+
+  resetCounter();
   clearForm();
+  // tasks.classList.remove("hidden");
   tasks.innerHTML = "";
 
   //condition to hide clear button on condition
-  taskList.length > 0 ? (resetData.classList.remove("hidden"))
+  taskList.length > 0
+    ? resetData.classList.remove("hidden")
     : resetData.classList.add("hidden");
 
   taskList.length > 0 &&
@@ -153,11 +182,16 @@ function createNewTask() {
             ? ` ${x.description}<span>...</span><button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>less</button>`
             : x.description.slice(0, 40);
       }
-
+      const dateFormated = `${new Date(x.date)
+        .getDate()
+        .toString()
+        .padStart(2, "0")}-${(new Date(x.date).getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${new Date(x.date).getFullYear()}`;
       return (tasks.innerHTML += `
     <div class="task-container" id=${y}>
     <span class="fw-bold">${x.title}</span>
-    <span class="small text-secondary">${x.date}</span>
+    <span class="small text-secondary">${dateFormated}</span>
     <p class="descText">${description}
     <span class="show-more"></span>
     </p>
@@ -169,10 +203,10 @@ function createNewTask() {
 `);
     });
   clearForm();
+  resetCounter();
 }
 
 createNewTask();
-
 
 //Delete a task
 
@@ -195,10 +229,8 @@ let deleteTask = (y) => {
   });
 };
 
-
 function editTask(e) {
   if (!taskList.length && !localStorage.taskList) {
-    
     taskList = JSON.parse(localStorage.getItem("taskList"));
   }
   textInput.value = taskList[e.id].title;
@@ -207,11 +239,9 @@ function editTask(e) {
 
   document.getElementById("add").classList.add("hidden");
   document.getElementById("edit").classList.remove("hidden");
-  index= e.id;
-  edit = true
-  
+  index = e.id;
+  edit = true;
 }
-
 
 function clearForm() {
   textInput.value = "";
@@ -222,14 +252,15 @@ function clearForm() {
 resetData.addEventListener("click", function () {
   localStorage.clear();
   taskList = [];
+  // tasks.classList.add("hidden");
   createNewTask();
+  resetData.classList.add("hidden");
 });
 
 document.querySelector("#addNew").addEventListener("click", () => {
+  resetCounter();
   clearForm();
   document.getElementById("edit").classList.add("hidden");
 
   document.getElementById("add").classList.remove("hidden");
 });
-
-
