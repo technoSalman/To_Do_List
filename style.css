@@ -74,7 +74,7 @@ height: 500px;
   /* overflow-y: scroll; */
   height: 200px;
   border: 3px solid #a17bd3;
-  background-color: #e2eede;
+  background-color: #e9deee;
   border-radius: 8px;
   padding: 7px;
   display: grid;
@@ -91,20 +91,15 @@ height: 500px;
   cursor: pointer;
 }
 
-.moreText{
-  display:inline;
-}
-
-.show-more{
-  display: none;
-}
 
 #form-control-head{
   display: none;
 }
 
 .moreBtn{
- border-color: #dedddf;
+color: #0e0a11;
+background-color: #a463d0;
+border-radius: 15px;
 }
 
 .clearBtn{
