@@ -38,8 +38,6 @@ const countCharacters = () => {
 
 
 
-
-
 function resetCounter() {
   characterCounter.textContent = "1000/1000";
 }
@@ -62,7 +60,7 @@ let taskList = JSON.parse(localStorage.getItem("taskList")) || [];
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
-  formValidation(e);
+  formValidation();
 });
 
 dateInput.addEventListener("click", function () {
@@ -109,8 +107,14 @@ let formValidation = (e) => {
     }
 
     validInput(textInput.value, dateInput.value, textArea.value);
+
     e.preventDefault();
-  } else {
+
+  }
+  
+  else 
+  
+  {
 
     addFormData();
     add.setAttribute("data-bs-dismiss", "modal");
@@ -154,7 +158,7 @@ function createNewTask() {
 
   resetCounter();
   clearForm();
-  // tasks.classList.remove("hidden");
+
   tasks.innerHTML = "";
 
   //condition to hide clear button on condition
