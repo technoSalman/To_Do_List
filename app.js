@@ -188,7 +188,7 @@ function createNewTask() {
             ?`${x.description
              .slice(
                 0,
-                40
+                x.description.indexOf(" ", 40)
               )
             }<span>...</span><button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>more</button>`
             : x.description;
@@ -197,7 +197,7 @@ function createNewTask() {
       if (!x.more) {
         var description =
           x.description.length > 40
-            ? ` ${x.description}<span></span><button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>less</button>`
+            ? ` ${x.description}<button id=${y} class="moreBtn" onclick={lessThanFunction(this.id)}>less</button>`
             : x.description.slice(0, 40);
       }
       const dateFormated = `${new Date(x.date)
