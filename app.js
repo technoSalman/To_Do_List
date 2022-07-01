@@ -26,6 +26,7 @@ modal.addEventListener("click", function(){
   message3.classList.add("hidden");
 })
 
+
 const countCharacters = () => {
   let numOfEnteredChars = textArea.value.length;
   let counter = maxNumOfChars - numOfEnteredChars;
@@ -49,7 +50,7 @@ const countCharacters = () => {
 function resetCounter() {
 
   characterCounter.textContent = maxNumOfChars + "/"+ maxNumOfChars; 
-  
+
 }
 
 
@@ -75,6 +76,7 @@ form.addEventListener("submit", function (e) {
   formValidation();
 });
 
+
 dateInput.addEventListener("click", function () {
   let today = new Date();
   let dd = today.getDate();
@@ -90,6 +92,7 @@ dateInput.addEventListener("click", function () {
   today = yyyy + "-" + mm + "-" + dd;
   dateInput.setAttribute("min", today);
 });
+
 
 //Form validation
 let formValidation = (e) => {
@@ -165,8 +168,11 @@ function lessThanFunction(x) {
   createNewTask();
 }
 
+
 //Create a new task
 function createNewTask() {
+
+  sortTaskList();
 
   resetCounter();
   clearForm();
@@ -248,9 +254,18 @@ let deleteTask = (y) => {
 };
 
 function editTask(e) {
+  
   if (!taskList.length && !localStorage.taskList) {
     taskList = JSON.parse(localStorage.getItem("taskList"));
   }
+  message1.classList.add("hidden");
+  message2.classList.add("hidden");
+  message3.classList.add("hidden");
+
+  let descCharLength = maxNumOfChars - taskList[e.id].description.length;
+
+  characterCounter.textContent = descCharLength + "/1000" 
+
   textInput.value = taskList[e.id].title;
   dateInput.value = taskList[e.id].date;
   textArea.value = taskList[e.id].description;
@@ -259,6 +274,8 @@ function editTask(e) {
   document.getElementById("edit").classList.remove("hidden");
   index = e.id;
   edit = true;
+  sortTaskList();
+
 }
 
 
@@ -285,3 +302,12 @@ document.querySelector("#addNew").addEventListener("click", () => {
 
   document.getElementById("add").classList.remove("hidden");
 });
+
+
+function sortTaskList(){
+    taskList.sort((a,b)=> {
+      let date1 = new Date(a.date);
+      let date2 = new Date(b.date);
+      return  date1.valueOf() - date2.valueOf();
+    })
+}
