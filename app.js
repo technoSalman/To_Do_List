@@ -15,18 +15,17 @@ let index = -1;
 let characterCounter = document.getElementById("char_count");
 const maxNumOfChars = 1000;
 
+//An array to store tasks
+let taskList = JSON.parse(localStorage.getItem("taskList")) || [];
 
 
-const modal = document.getElementById("addNew");
-modal.addEventListener("click", function(){
-  edit = false;//this is needed to stop addnewtask functionality from behaving as edit functionality
-  countCharacters();
-  message1.classList.add("hidden");
-  message2.classList.add("hidden");
-  message3.classList.add("hidden");
-})
 
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  formValidation();
+});
 
+//A word counter for description textarea
 const countCharacters = () => {
   let numOfEnteredChars = textArea.value.length;
   let counter = maxNumOfChars - numOfEnteredChars;
@@ -44,15 +43,23 @@ const countCharacters = () => {
   return maxNumOfChars;
 };
 
-
-
-
+//reset the word counter on description 
 function resetCounter() {
 
   characterCounter.textContent = maxNumOfChars + "/"+ maxNumOfChars; 
 
 }
 
+
+
+const modal = document.getElementById("addNew");
+modal.addEventListener("click", function(){
+  edit = false;//this is needed to stop addnewtask functionality from behaving as edit functionality
+  countCharacters();
+  message1.classList.add("hidden");
+  message2.classList.add("hidden");
+  message3.classList.add("hidden");
+})
 
 
 textArea.addEventListener("input", countCharacters);
@@ -69,14 +76,8 @@ textArea.addEventListener("input", function () {
   message3.classList.add("hidden");
 });
 
-let taskList = JSON.parse(localStorage.getItem("taskList")) || [];
 
-form.addEventListener("submit", function (e) {
-  e.preventDefault();
-  formValidation();
-});
-
-
+//function to restrict user from accessing past dates
 dateInput.addEventListener("click", function () {
   let today = new Date();
   let dd = today.getDate();
@@ -142,7 +143,7 @@ let formValidation = (e) => {
   resetCounter();
 };
 
-//Add new data to local Storage
+//Push new data to local Storage and taskList array if it is not edit
 
 let addFormData = () => {
   if (edit) {
@@ -160,26 +161,26 @@ let addFormData = () => {
     });
   }
   localStorage.setItem("taskList", JSON.stringify(taskList));
-  createNewTask();
+  renderNewTaskList();
 };
 
+//more/less button functionality
 function lessThanFunction(x) {
   taskList[x].more = !taskList[x].more;
-  createNewTask();
+  renderNewTaskList();
 }
 
 
-//Create a new task
-function createNewTask() {
+//function to create and render a new task
+function renderNewTaskList() {
 
   sortTaskList();
-
   resetCounter();
   clearForm();
 
   tasks.innerHTML = "";
 
-  //condition to hide clear button on condition
+  // To hide clear button if length of array is less than 1
   taskList.length > 0
     ? resetData.classList.remove("hidden")
     : resetData.classList.add("hidden");
@@ -221,7 +222,7 @@ function createNewTask() {
     </p>
     <span class="options">
       <i onclick = "editTask(this)"  id=${y} data-bs-toggle="modal" data-bs-target="#form" class="fas fa-edit"></i>
-      <i onclick ="deleteTask(${y}); createNewTask()" id=${y} class="fas fa-trash-alt"></i>
+      <i onclick ="deleteTask(${y}); renderNewTaskList()" id=${y} class="fas fa-trash-alt"></i>
     </span>
     </div>
 `);
@@ -230,7 +231,7 @@ function createNewTask() {
   resetCounter();
 }
 
-createNewTask();
+renderNewTaskList();
 
 //Delete a task
 
@@ -247,12 +248,13 @@ let deleteTask = (y) => {
     if (result.isConfirmed) {
       taskList.splice(y, 1);
       localStorage.setItem("taskList", JSON.stringify(taskList));
-      createNewTask(taskList);
+      renderNewTaskList(taskList);
       new swal("Deleted!", "Your file has been deleted.", "success");
     } else return;
   });
 };
 
+//Edit a task on taskList
 function editTask(e) {
   
   if (!taskList.length && !localStorage.taskList) {
@@ -278,23 +280,22 @@ function editTask(e) {
 
 }
 
-
+//Reset the form
 function clearForm() {
   textInput.value = "";
   dateInput.value = "";
   textArea.value = "";
 }
 
-
+//clear button functionality
 resetData.addEventListener("click", function () {
   localStorage.clear();
-  taskList = [];
-  // tasks.classList.add("hidden");
-  createNewTask();
+  taskList = []; 
+  renderNewTaskList();
   resetData.classList.add("hidden");
 });
 
-
+//Swaping betweem edit and add button
 document.querySelector("#addNew").addEventListener("click", () => {
   resetCounter();
   clearForm();
@@ -303,7 +304,7 @@ document.querySelector("#addNew").addEventListener("click", () => {
   document.getElementById("add").classList.remove("hidden");
 });
 
-
+//funtion to sort taskList
 function sortTaskList(){
     taskList.sort((a,b)=> {
       let date1 = new Date(a.date);
@@ -311,3 +312,5 @@ function sortTaskList(){
       return  date1.valueOf() - date2.valueOf();
     })
 }
+
+
